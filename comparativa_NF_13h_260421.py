@@ -197,9 +197,13 @@ plt.savefig('0_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
 #%% Importo ciclos y resultados para buena sintesis 
 # NF@cit 13 hs - 260409
 sintesis_buena = '260409 buena'
-ciclos_13_buena = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*ciclo_promedio_H_M.txt",recursive=True)
-resultados_13_buena = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*resultados.txt",recursive=True)
+#pc portatil
+#ciclos_13_buena = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*ciclo_promedio_H_M.txt",recursive=True)
+#resultados_13_buena = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*resultados.txt",recursive=True)   
 
+#pc escritorio
+ciclos_13_buena = glob("../260410_NF@cit_13h_260409_ESAR_c_Temp/152dA/**/*ciclo_promedio_H_M.txt",recursive=True)
+resultados_13_buena = glob("../260410_NF@cit_13h_260409_ESAR_c_Temp/152dA/**/*resultados.txt",recursive=True)
 ciclos_13_buena.sort()
 resultados_13_buena.sort()
 conc_13_buena = 32.8 #g/L
@@ -227,8 +231,14 @@ plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_buena}\n300 kHz & 58 kA/m'
 #%% Importo ciclos y resultados para sintesis mala
 # NF@cit 13 hs - 260409
 sintesis_mala = '260330 mala'
-ciclos_13_mala = glob("../260406_ESAR_c_Temp_NF-cit_13h_260330/57_150/**/*ciclo_promedio_H_M.txt",recursive=True)
-resultados_13_mala = glob("../260406_ESAR_c_Temp_NF-cit_13h_260330/57_150/**/*resultados.txt",recursive=True)
+# pc portatil
+# ciclos_13_mala = glob("../26040
+# 6_ESAR_c_Temp_NF-cit_13h_260330/57_150/**/*ciclo_promedio_H_M.txt",recursive=True)
+# resultados_13_mala = glob("../260406_ESAR_c_Temp_NF-cit_13h_260330/57_150/**/*resultados.txt",recursive=True)
+
+# pc escritorio
+ciclos_13_mala = glob("../260406_NF@cit_13h_260330_ESAR_c_Temp/57_150/**/*ciclo_promedio_H_M.txt",recursive=True)
+resultados_13_mala = glob("../260406_NF@cit_13h_260330_ESAR_c_Temp/57_150/**/*resultados.txt",recursive=True)
 
 ciclos_13_mala.sort()
 resultados_13_mala.sort()
@@ -256,19 +266,21 @@ ax.legend(loc='upper left')
 plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_mala}\n300 kHz & 58 kA/m')          
 
 #%% COMPARO LAS 4 SINTESIS en grafico 2x2 
-# primero extraigo SAR y tau de resultados para cada sintesis
+#%% primero extraigo SAR y tau de resultados para cada sintesis
 def extraer_SAR_tau(resultados):
     SAR = []
     tau = []
+    Hc = []
     for res in resultados:
         meta,_,_,_,_,_,_,_,_,_,_,_,_,_,_ = lector_resultados(res)   
         SAR.append(meta['SAR_W/g'])
-        tau.append(meta['tau_ns']) 
-    return SAR, tau
-SAR_13_AV, tau_13_AV = extraer_SAR_tau(resultados_13_AV)
-SAR_13_AN, tau_13_AN = extraer_SAR_tau(resultados_13_AN)
-SAR_13_buena, tau_13_buena = extraer_SAR_tau(resultados_13_buena)
-SAR_13_mala, tau_13_mala = extraer_SAR_tau(resultados_13_mala)    
+        tau.append(meta['tau_ns'])
+        Hc.append(meta['Hc_kA/m']) 
+    return SAR, tau, Hc
+SAR_13_AV, tau_13_AV, Hc_13_AV = extraer_SAR_tau(resultados_13_AV)
+SAR_13_AN, tau_13_AN, Hc_13_AN = extraer_SAR_tau(resultados_13_AN)
+SAR_13_buena, tau_13_buena, Hc_13_buena = extraer_SAR_tau(resultados_13_buena)
+SAR_13_mala, tau_13_mala, Hc_13_mala = extraer_SAR_tau(resultados_13_mala)    
 #%% Ploteo comparativo de las 4 sintesis en grafico 2x2, normalizando por concentracion y con SAR en la leyenda
 
 fig5 , axs = plt.subplots(2, 2, figsize=(12, 10), constrained_layout=True, sharex=True, sharey=True)
@@ -306,34 +318,73 @@ for a in [axs[1, 0], axs[1, 1]]:
 for a in [axs[0, 0], axs[1, 0]]:
     a.set_ylabel('M/[NPM] (Am²/kg)') 
 plt.suptitle(f'Comparativa sintesis NF@cit 13 hs\n300 kHz & 58 kA/m')
-# %% ploteo comparativo de errorbars de tau
+#%% Agrego 1er sintesis de 13 hs
+# NF@cit 13 hs - 260409
+sintesis_primera = '260306 primera'
+#pc portatil
+#ciclos_13_primera = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*ciclo_promedio_H_M.txt",recursive=True)
+#resultados_13_primera = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*resultados.txt",recursive=True)   
 
+#pc escritorio
+ciclos_13_primera = glob("../260306_NF@cit_8_13_18_hs_260306_ESAR_c_Temp/NF13hs/150dA/**/*ciclo_promedio_H_M.txt",recursive=True)
+resultados_13_primera = glob("../260306_NF@cit_8_13_18_hs_260306_ESAR_c_Temp/NF13hs/150dA/**/*resultados.txt",recursive=True)
+ciclos_13_primera.sort()
+resultados_13_primera.sort()
+conc_13_primera = 26.7 #g/L
+
+for p in ciclos_13_primera:
+    print('  ',p)
+
+for res in resultados_13_primera:
+    print('  ',res)
+print('-'*50)   
+# ploteo
+
+fig02, ax =plt.subplots(1,1,figsize=(6,5),constrained_layout=True)  
+ax.set_ylabel('M (A/m)')
+ax.set_title(f'NF@cit 13 hs - {conc_13_primera:.1f} g/L',loc='left')      
+for i,e in enumerate(ciclos_13_primera):
+    if '150dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_primera[i])
+        ax.plot(H_13/1000,M_13,'-',label=f'NF{i}')
+ax.grid()
+ax.set_xlabel('H (kA/m)')
+ax.legend(loc='upper left')
+plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_primera}\n300 kHz & 58 kA/m')          
+
+#extraigo ESAR, tau y Hc de la primera sintesis
+#saco ultimo dato de res por conveniencia estetica en los graficos. Los resultados son casi iguales
+resultados_13_primera.pop(-1)
+ciclos_13_primera.pop(-1)
+SAR_13_primera, tau_13_primera, Hc_13_primera = extraer_SAR_tau(resultados_13_primera)  
+# %% ploteo comparativo de errorbars de ESAR
 cuadro = '$f=300$ kHz\n$H_0=58$ kA/m'
-categorias = [sintesis_AV, sintesis_AN, sintesis_buena, sintesis_mala]
-
-
+categorias = ['260306\nprimera','260409\nmala','260409\nbuena','260421\nAutoclave Viejo', '260421\nAutoclave Nuevo']
 x = np.arange(len(categorias))
 
-fig, ax = plt.subplots(figsize=(8,5),constrained_layout=True)
+fig1, ax = plt.subplots(figsize=(9,5),constrained_layout=True)
+
 sep = 0.25
 
-for i,s in enumerate(SAR_13_AV):
+for i,s in enumerate(SAR_13_primera):
     ax.bar(i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C0')
 
-for i,s in enumerate(SAR_13_AN):
-    ax.bar(1+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C1')
+for i,s in enumerate(SAR_13_mala):
+    ax.bar(1+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C3')
 
 for i,s in enumerate(SAR_13_buena):
     ax.bar(2+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C2')
 
-for i,s in enumerate(SAR_13_mala):
-    ax.bar(3+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C3')
+for i,s in enumerate(SAR_13_AV):
+    ax.bar(3+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C1')
+
+for i,s in enumerate(SAR_13_AN):
+    ax.bar(4+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C4')
 
 
 ax.set_xticks(x)
 ax.set_xticklabels(categorias)
-ax.set_ylabel('ESAR')
-ax.set_xlabel('Categoría')
+ax.set_ylabel('ESAR (W/g)')
 ax.set_title('ESAR NF@cit 13 hs - Comparativa de síntesis')
 ax.grid(axis='y', alpha=0.3)
 
@@ -341,5 +392,125 @@ ax.text(0.9,0.9,cuadro, transform=ax.transAxes,
         va='top', ha='center', fontsize=12,
         bbox=dict(alpha=0.8,facecolor='white'))
 plt.show()
+#%% ploteo comparativo de errorbars de tau
+fig2, ax = plt.subplots(figsize=(9,5),constrained_layout=True)
 
-#%%
+sep = 0.25
+
+for i,s in enumerate(tau_13_primera):
+    ax.bar(i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C0')
+
+for i,s in enumerate(tau_13_mala):
+    ax.bar(1+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C3')
+
+for i,s in enumerate(tau_13_buena):
+    ax.bar(2+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C2')
+
+for i,s in enumerate(tau_13_AV):
+    ax.bar(3+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C1')
+
+for i,s in enumerate(tau_13_AN):
+    ax.bar(4+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C4')
+
+ax.set_xticks(x)
+ax.set_xticklabels(categorias)
+ax.set_ylabel(r'$\tau$ (ns)')
+#ax.set_xlabel('Categoría')
+ax.set_title(r'$\tau$ NF@cit 13 hs - Comparativa de síntesis')
+ax.grid(axis='y', alpha=0.3)
+
+ax.text(0.9,0.9,cuadro, transform=ax.transAxes, 
+        va='top', ha='center', fontsize=12,
+        bbox=dict(alpha=0.8,facecolor='white'))
+plt.show()
+#%% Idem Hc
+fig3, ax = plt.subplots(figsize=(9,5),constrained_layout=True)
+
+sep = 0.25
+for i,s in enumerate(Hc_13_primera):
+    ax.bar(i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C0')
+
+for i,s in enumerate(Hc_13_mala):
+    ax.bar(1+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C3')
+
+for i,s in enumerate(Hc_13_buena):
+    ax.bar(2+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C2')
+
+for i,s in enumerate(Hc_13_AV):
+    ax.bar(3+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C1')
+
+for i,s in enumerate(Hc_13_AN):
+    ax.bar(4+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C4')
+
+
+ax.set_xticks(x)
+ax.set_xticklabels(categorias)
+ax.set_ylabel('H$_c$ (kA/m)')
+ax.set_title('H$_c$ NF@cit 13 hs - Comparativa de síntesis')
+ax.grid(axis='y', alpha=0.3)
+
+ax.text(0.9,0.9,cuadro, transform=ax.transAxes, 
+        va='top', ha='center', fontsize=12,
+        bbox=dict(alpha=0.8,facecolor='white'))
+plt.show()
+#%% Salvo figs
+
+fig1.savefig('1_ESAR_comparativa_sintesis_NF13h.png',dpi=300)
+fig2.savefig('2_tau_comparativa_sintesis_NF13h.png',dpi=300)
+fig3.savefig('3_Hc_comparativa_sintesis_NF13h.png',dpi=300)
+# %% Comparativa 1x5 de todos los ciclos promedio normalizados por concentracion, con SAR en la leyenda
+
+#%% Ploteo comparativo en 1x5 (incluyendo síntesis primera)
+
+fig, axs = plt.subplots(1, 5, figsize=(21, 5), constrained_layout=True, sharex=True, sharey=True)
+
+# Títulos
+axs[0].set_title(f'{sintesis_primera} - {conc_13_primera:.1f} g/L', loc='left')
+axs[1].set_title(f'{sintesis_mala} - {conc_13_mala:.1f} g/L', loc='left')
+axs[2].set_title(f'{sintesis_buena} - {conc_13_buena:.1f} g/L', loc='left')
+axs[3].set_title(f'{sintesis_AV} - {conc_13_AV:.1f} g/L', loc='left')
+axs[4].set_title(f'{sintesis_AN} - {conc_13_AN:.1f} g/L', loc='left')
+
+
+# --- PRIMERA ---
+for h, j in enumerate(ciclos_13_primera):
+    if '150dA' in j:
+        _, _, _, H_13, M_13, _ = lector_ciclos(j)
+        axs[0].plot(H_13/1000, M_13/conc_13_primera, '-', label=f'{SAR_13_primera[h]:.3uS}')
+
+# --- MALA ---
+for i, e in enumerate(ciclos_13_mala):
+    if '150dA' in e:
+        _, _, _, H_13, M_13, _ = lector_ciclos(e)
+        axs[1].plot(H_13/1000, M_13/conc_13_mala, '-', label=f'{SAR_13_mala[i]:.3uS}')
+
+# --- BUENA ---
+for i, e in enumerate(ciclos_13_buena):
+    if '152dA' in e:
+        _, _, _, H_13, M_13, _ = lector_ciclos(e)
+        axs[2].plot(H_13/1000, M_13/conc_13_buena, '-', label=f'{SAR_13_buena[i]:.3uS}')
+# --- AV ---
+for i, e in enumerate(ciclos_13_AV):
+    if '152dA' in e:
+        _, _, _, H_13, M_13, _ = lector_ciclos(e)
+        axs[3].plot(H_13/1000, M_13/conc_13_AV, '-', label=f'{SAR_13_AV[i]:.3uS}')
+
+# --- AN ---
+for i, e in enumerate(ciclos_13_AN):
+    if '152dA' in e:
+        _, _, _, H_13, M_13, _ = lector_ciclos(e)
+        axs[4].plot(H_13/1000, M_13/conc_13_AN, '-', label=f'{SAR_13_AN[i]:.3uS}')
+
+
+
+# Formato común
+for ax in axs:
+    ax.grid()
+    ax.legend(title='SAR (W/g)', loc='upper left', frameon=True, shadow=True)
+
+# Etiquetas (solo donde corresponde para no repetir)
+axs[0].set_ylabel('M/[NPM] (Am²/kg)')
+for ax in axs:
+    ax.set_xlabel('H (kA/m)')
+    
+plt.savefig('0_comparativa_ciclos_promedio_NF13h_primera_mala_buena_AV_AN.png',dpi=300)
