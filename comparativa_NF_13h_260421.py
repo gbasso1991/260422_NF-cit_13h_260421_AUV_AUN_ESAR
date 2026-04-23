@@ -118,7 +118,7 @@ def lector_ciclos(filepath):
 #%% Obtengo ciclos y resultados para cada concentracion - Todo a 300 kHz
 
 # Autoclave Viejo
-sintesis_AV = '260421 AV'
+sintesis_AV = '260421 Autoclave Viejo'
 ciclos_13_AV = glob("Autoclave_Viejo/**/**/*ciclo_promedio_H_M.txt")
 resultados_13_AV = glob("Autoclave_Viejo/**/**/*resultados.txt")
 
@@ -131,9 +131,9 @@ for p in ciclos_13_AV:
 
 for res in resultados_13_AV:
     print('  ',res)
-    
+print('-'*50)    
 # Autoclave Nuevo
-sintesis_AN = '260421 AN'
+sintesis_AN = '260421 Autoclave Nuevo'
 ciclos_13_AN = glob("Autoclave_Nuevo/**/**/*ciclo_promedio_H_M.txt")
 resultados_13_AN = glob("Autoclave_Nuevo/**/**/*resultados.txt")
 
@@ -146,23 +146,13 @@ for p in ciclos_13_AN:
 
 for res in resultados_13_AN:
     print('  ',res)    
-    
-#%% ploteo aux
+print('-'*50)    
+#%% ploteo Viejo/Nuevo
 fig00, (ax,ax2) =plt.subplots(1,2,figsize=(11,5),constrained_layout=True,sharey=True,sharex=True)
 
 ax.set_ylabel('M (A/m)')
 ax.set_title(f'Autoclave Viejo - {conc_13_AV:.1f} g/L',loc='left')
 ax2.set_title(f'Autoclave Nuevo - {conc_13_AN:.1f} g/L',loc='left')
-
-# for i,e in enumerate(ciclos_13):
-#     if '100dA' in e:
-#         _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-#         ax.plot(H_13/1000,M_13,'-',label=f'NF{i}')
-
-# for i,e in enumerate(ciclos_13):
-#     if '125dA' in e:
-#         _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-#         ax2.plot(H_13/1000,M_13,'-',label=f'NF{i}')
 
 for i,e in enumerate(ciclos_13_AV):
     if '152dA' in e:
@@ -187,16 +177,6 @@ ax.set_ylabel('M/[NPM] (Am²/kg)')
 ax.set_title(f'Autoclave Viejo - {conc_13_AV:.1f} g/L',loc='left')
 ax2.set_title(f'Autoclave Nuevo - {conc_13_AN:.1f} g/L',loc='left')
 
-# for i,e in enumerate(ciclos_13):
-#     if '100dA' in e:
-#         _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-#         ax.plot(H_13/1000,M_13,'-',label=f'NF{i}')
-
-# for i,e in enumerate(ciclos_13):
-#     if '125dA' in e:
-#         _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-#         ax2.plot(H_13/1000,M_13,'-',label=f'NF{i}')
-
 for i,e in enumerate(ciclos_13_AV):
     if '152dA' in e:
         _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_AV[i])
@@ -214,391 +194,152 @@ for a in ax,ax2:
 plt.suptitle(f'Comparativa ciclos promedio NF@cit 13 hs\n300 kHz & 58 kA/m')
 plt.savefig('0_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
 
+#%% Importo ciclos y resultados para buena sintesis 
+# NF@cit 13 hs - 260409
+sintesis_buena = '260409 buena'
+ciclos_13_buena = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*ciclo_promedio_H_M.txt",recursive=True)
+resultados_13_buena = glob("../260410_ESAR_c_Temp_NF-cit_13h_260409/152dA/**/*resultados.txt",recursive=True)
 
-#%% Ploteo Ciclos Promedio 
-fig00, (ax,ax2,ax3) =plt.subplots(1,3,figsize=(15,5),constrained_layout=True,sharey=True,sharex=True)
+ciclos_13_buena.sort()
+resultados_13_buena.sort()
+conc_13_buena = 32.8 #g/L
 
+for p in ciclos_13_buena:
+    print('  ',p)
+
+for res in resultados_13_buena:
+    print('  ',res)
+print('-'*50)   
+# ploteo
+
+fig02, ax =plt.subplots(1,1,figsize=(6,5),constrained_layout=True)  
 ax.set_ylabel('M (A/m)')
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')
-ax3.set_title('57 kA/m',loc='left')
-
-for i,e in enumerate(ciclos_13):
-    if '100dA' in e:
-        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
+ax.set_title(f'NF@cit 13 hs - {conc_13_buena:.1f} g/L',loc='left')      
+for i,e in enumerate(ciclos_13_buena):
+    if '152dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_buena[i])
         ax.plot(H_13/1000,M_13,'-',label=f'NF{i}')
-
-for i,e in enumerate(ciclos_13):
-    if '125dA' in e:
-        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-        ax2.plot(H_13/1000,M_13,'-',label=f'NF{i}')
-
-for i,e in enumerate(ciclos_13):
-    if '152dA' in e:
-        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-        ax3.plot(H_13/1000,M_13,'-',label=f'NF{i}')
-
-for a in ax,ax2,ax3:
-    a.grid()
-    a.set_xlabel('H (kA/m)')
-    a.legend(loc='upper left')
-plt.suptitle(f'Comparativa ciclos promedio NF 13 hs\n300 kHz - {sintesis}')
-plt.savefig('1_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
-
-
-
-
-
-
-#%% Listas con Resultados
-
-res_13=[]
-print('Resultados 13 hs', '='*80,'\n')
-for r in resultados_13:
-    res_13.append(ResultadosESAR(os.path.dirname(r)))
-
-#%% 1- Templogs
-# 13 hs
-rates_13_38=[]
-ecSAR_13_38=[]
-rates_13_47=[]
-ecSAR_13_47=[]
-rates_13_57=[]
-ecSAR_13_57=[]
-
-fig11, (ax,ax2,ax3) =plt.subplots(3,1,figsize=(12,8),constrained_layout=True,sharey=True,sharex=True)
-
-for i,r in enumerate(res_13):
-    if ('100dA' in r.directorio):
-        dt = r.time[-1]-r.time[0]
-        dT = r.temperatura[-1]-r.temperatura[0]
-        rate=dT/dt
-        rates_13_38.append(rate)
-        ecSAR_13_38.append(rate*4186/conc_13)
-        label=f'$\Delta$t= {dt:.2f} s  $\Delta$T= {dT:.2f} °C  WR= {rate:.2f} °C/s'
-        ax.plot(r.time,r.temperatura,'.-',label=label)
-
-for i,r in enumerate(res_13):
-    if ('125dA' in r.directorio):
-        dt = r.time[-1]-r.time[0]
-        dT = r.temperatura[-1]-r.temperatura[0]
-        rate=dT/dt
-        rates_13_47.append(rate)
-        ecSAR_13_47.append(rate*4186/conc_13)
-        label=f'$\Delta$t= {dt:.2f} s  $\Delta$T= {dT:.2f} °C  WR= {rate:.2f} °C/s'
-        ax2.plot(r.time,r.temperatura,'.-',label=label)
-
-for i,r in enumerate(res_13):
-    if ('152dA' in r.directorio):
-        dt = r.time[-1]-r.time[0]
-        dT = r.temperatura[-1]-r.temperatura[0]
-        rate=dT/dt
-        rates_13_57.append(rate)
-        ecSAR_13_57.append(rate*4186/conc_13)
-        label=f'$\Delta$t= {dt:.2f} s  $\Delta$T= {dT:.2f} °C  WR= {rate:.2f} °C/s'
-        ax3.plot(r.time,r.temperatura,'.-',label=label)
-        
-rate_13_38=ufloat(np.mean(rates_13_38),np.std(rates_13_38))
-rate_13_47=ufloat(np.mean(rates_13_47),np.std(rates_13_47))
-rate_13_57=ufloat(np.mean(rates_13_57),np.std(rates_13_57))
-
-ecSAR_13_38=ufloat(np.mean(ecSAR_13_38),np.std(ecSAR_13_38))
-ecSAR_13_47=ufloat(np.mean(ecSAR_13_47),np.std(ecSAR_13_47))
-ecSAR_13_57=ufloat(np.mean(ecSAR_13_57),np.std(ecSAR_13_57))
-
-ax.text(0.98,0.1,f'WR = {rate_13_38:.1uS} °C/s\necSAR = {ecSAR_13_38:.2uS} W/g',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='bottom',
-        transform=ax.transAxes)
-
-ax2.text(0.98,0.1,f'WR = {rate_13_47:.1uS} °C/s\necSAR = {ecSAR_13_47:.2uS} W/g',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='bottom',
-        transform=ax2.transAxes)
-
-ax3.text(0.98,0.1,f'WR = {rate_13_57:.1uS} °C/s\necSAR = {ecSAR_13_57:.2uS} W/g',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='bottom',
-        transform=ax3.transAxes)    
-for a in ax,ax2,ax3:
-    a.grid()
-    a.legend(loc='best')
-    a.set_ylabel('T (ºC)')
-    
-ax.set_xlim(0,)
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')    
-ax3.set_xlabel('t (s)')
-plt.suptitle(f'Templogs\nNF 13 hs - {conc_13:.1f} g/L')
-plt.savefig('1_Templog_NF13h_38_47_57.png',dpi=300)
-
-#%% 2 - Tau vs time / Temp
-#% 13 hs
-
-fig210, (ax,ax2,ax3) =plt.subplots(3,1,figsize=(12,8),constrained_layout=True,sharey=False,sharex=True)
-
-for i,r in enumerate(res_13):
-    if '100dA' in r.directorio:
-        ax.plot(r.time,r.tau,'.-',label=f'NF{str(i).zfill(2)}')
-
-for i,r in enumerate(res_13):
-    if '125dA' in r.directorio:
-        ax2.plot(r.time,r.tau,'.-',label=f'NF{str(i).zfill(2)}')
-
-for i,r in enumerate(res_13):
-    if '152dA' in r.directorio:
-        ax3.plot(r.time,r.tau,'.-',label=f'NF{str(i).zfill(2)}')
-
-for a in ax,ax2,ax3:
-    a.grid()
-    a.legend(loc='best')
-    a.set_ylabel('τ (ns)')
-ax.set_xlim(0,)
-
-ax3.set_xlabel('t (s)')
-
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')  
-plt.suptitle(f'tau vs time\nNF 13 hs - {conc_13:0.1f} g/L' )
-
-fig211, (ax,ax2,ax3) = plt.subplots(3,1,figsize=(12,8),constrained_layout=True,sharey=False,sharex=True)
-
-for i,r in enumerate(res_13):
-    if '100dA' in r.directorio:
-        ax.plot(r.temperatura,r.tau,'.-',label=f'NF{str(i).zfill(2)}')
-
-for i,r in enumerate(res_13):
-    if '125dA' in r.directorio:
-        ax2.plot(r.temperatura,r.tau,'.-',label=f'NF{str(i).zfill(2)}')
-
-for i,r in enumerate(res_13):
-    if '152dA' in r.directorio:
-        ax3.plot(r.temperatura,r.tau,'.-',label=f'NF{str(i).zfill(2)}')
-
-for a in ax,ax2,ax3:
-    a.grid()
-    a.legend(loc='upper right')
-    a.set_ylabel('τ (ns)')
-ax3.set_xlabel('T (°C)')
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')  
-
-plt.suptitle(f'tau vs Temperatura\nNF 13 hs - {conc_13:0.1f} g/L' )
-plt.savefig('2_tau_NF13h_38_47_57.png',dpi=300) 
-
-#%% 3 - ESAR vs time / Temp
-#% 13 hs
-ESAR_13_100,ESAR_13_125,ESAR_13_152=[],[],[]
-fig310, (ax,ax2,ax3) =plt.subplots(3,1,figsize=(10,6),constrained_layout=True,sharey=False,sharex=True)
-
-for i,r in enumerate(res_13):
-    if '100dA' in r.directorio:
-        ax.plot(r.time,r.SAR,'.-',label=f'NF{str(i).zfill(2)}')
-        ESAR_13_100.append(r.SAR)
-for i,r in enumerate(res_13):
-    if '125dA' in r.directorio:
-        ax2.plot(r.time,r.SAR,'.-',label=f'NF{str(i).zfill(2)}')
-        ESAR_13_125.append(r.SAR)
-for i,r in enumerate(res_13):
-    if '152dA' in r.directorio:
-        ax3.plot(r.time,r.SAR,'.-',label=f'NF{str(i).zfill(2)}')
-        ESAR_13_152.append(r.SAR)
-for a in ax,ax2,ax3:
-    a.grid()
-    #a.legend(loc='best')
-    a.set_ylabel('ESAR (W/g)')
-ax.set_xlim(0,)
-ax3.set_xlabel('t (s)')
-ESAR_13_100 = ufloat(np.mean(np.concatenate(ESAR_13_100)),np.std(np.concatenate(ESAR_13_100)))
-ESAR_13_125 = ufloat(np.mean(np.concatenate(ESAR_13_125)),np.std(np.concatenate(ESAR_13_125)))
-ESAR_13_152 = ufloat(np.mean(np.concatenate(ESAR_13_152)),np.std(np.concatenate(ESAR_13_152)))
-
-ax.text(0.98,0.2,f'ESAR = {ESAR_13_100:.2uS} W/g',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax.transAxes)
-
-ax2.text(0.98,0.2,f'ESAR = {ESAR_13_125:.3uS} W/g',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax2.transAxes)
-
-ax3.text(0.98,0.2,f'ESAR = {ESAR_13_152:.3uS} W/g',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax3.transAxes)    
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')  
-plt.suptitle(f'ESAR vs time\nNF 13 hs - {conc_13:0.1f} g/L' )
-plt.savefig('3_ESAR_vs_time_NF13h_38_47_57.png',dpi=300)
-
-fig311, (ax,ax2,ax3) = plt.subplots(3,1,figsize=(10,6),constrained_layout=True,sharey=False,sharex=True)
-
-for i,r in enumerate(res_13):
-    if '100dA' in r.directorio:
-        ax.plot(r.temperatura,r.SAR,'.-',label=f'NF{str(i).zfill(2)}')
-
-for i,r in enumerate(res_13):
-    if '125dA' in r.directorio:
-        ax2.plot(r.temperatura,r.SAR,'.-',label=f'NF{str(i).zfill(2)}')
-
-for i,r in enumerate(res_13):
-    if '152dA' in r.directorio:
-        ax3.plot(r.temperatura,r.SAR,'.-',label=f'NF{str(i).zfill(2)}')
-
-for a in ax,ax2,ax3:
-    a.grid()
-    a.legend(loc='upper right')
-    a.set_ylabel('ESAR (W/g)')
-ax3.set_xlabel('T (°C)')
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')  
-ax3.set_xlim(20,100)
-plt.suptitle(f'ESAR vs Temperatura\nNF 13 hs - {conc_13:0.1f} g/L' )
-plt.savefig('3_ESAR_vs_Temp_NF13h_38_47_57.png',dpi=300) 
-
-#%% 3 - Hc vs time / Temp
-# 13 hs
-HC_13_100,HC_13_125,HC_13_152=[],[],[]
-fig410, (ax,ax2,ax3) =plt.subplots(3,1,figsize=(10,6),constrained_layout=True,sharey=False,sharex=True)
-
-for i,r in enumerate(res_13):
-    if '100dA' in r.directorio:
-        ax.plot(r.time,r.Hc,'.-',label=f'NF{str(i).zfill(2)}')
-        HC_13_100.append(r.Hc)
-
-for i,r in enumerate(res_13):
-    if '125dA' in r.directorio:
-        ax2.plot(r.time,r.Hc,'.-',label=f'NF{str(i).zfill(2)}')
-        HC_13_125.append(r.Hc)
-
-for i,r in enumerate(res_13):
-    if '152dA' in r.directorio:
-        ax3.plot(r.time,r.Hc,'.-',label=f'NF{str(i).zfill(2)}')
-        HC_13_152.append(r.Hc)
-
-for a in ax,ax2,ax3:
-    a.grid()
-    a.set_ylabel('Hc (kA/m)')
-
-ax.set_xlim(0,)
-ax3.set_xlabel('t (s)')
-
-HC_13_100 = ufloat(np.mean(np.concatenate(HC_13_100)),np.std(np.concatenate(HC_13_100)))
-HC_13_125 = ufloat(np.mean(np.concatenate(HC_13_125)),np.std(np.concatenate(HC_13_125)))
-HC_13_152 = ufloat(np.mean(np.concatenate(HC_13_152)),np.std(np.concatenate(HC_13_152)))
-
-ax.text(0.98,0.2,f'H$_c$ = {HC_13_100:.2uS}',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax.transAxes)
-
-ax2.text(0.98,0.2,f'H$_c$ = {HC_13_125:.2uS}',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax2.transAxes)
-
-ax3.text(0.98,0.2,f'H$_c$ = {HC_13_152:.2uS}',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax3.transAxes)
-
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')
-
-plt.suptitle(f'Hc vs time\nNF 13 hs - {conc_13:0.1f} g/L')
-plt.savefig('4_Hc_vs_time_NF13h_38_47_57.png',dpi=300)
-
-#%% 5 - Mag Remanente vs time/Temp
-
-Mr_13_100,Mr_13_125,Mr_13_152=[],[],[]
-fig410, (ax,ax2,ax3) =plt.subplots(3,1,figsize=(10,6),constrained_layout=True,sharey=False,sharex=True)
-
-for i,r in enumerate(res_13):
-    if '100dA' in r.directorio:
-        ax.plot(r.time,r.Mr,'.-',label=f'NF{str(i).zfill(2)}')
-        Mr_13_100.append(r.Mr)
-
-for i,r in enumerate(res_13):
-    if '125dA' in r.directorio:
-        ax2.plot(r.time,r.Mr,'.-',label=f'NF{str(i).zfill(2)}')
-        Mr_13_125.append(r.Mr)
-
-for i,r in enumerate(res_13):
-    if '152dA' in r.directorio:
-        ax3.plot(r.time,r.Mr,'.-',label=f'NF{str(i).zfill(2)}')
-        Mr_13_152.append(r.Mr)
-
-for a in ax,ax2,ax3:
-    a.grid()
-    a.set_ylabel('Mr (A/m)')
-
-ax.set_xlim(0,)
-ax3.set_xlabel('t (s)')
-
-Mr_13_100 = ufloat(np.mean(np.concatenate(Mr_13_100)),np.std(np.concatenate(Mr_13_100)))
-Mr_13_125 = ufloat(np.mean(np.concatenate(Mr_13_125)),np.std(np.concatenate(Mr_13_125)))
-Mr_13_152 = ufloat(np.mean(np.concatenate(Mr_13_152)),np.std(np.concatenate(Mr_13_152)))
-
-ax.text(0.98,0.2,f'H$_c$ = {Mr_13_100:.2uS}',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax.transAxes)
-
-ax2.text(0.98,0.2,f'H$_c$ = {Mr_13_125:.2uS}',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax2.transAxes)
-
-ax3.text(0.98,0.2,f'H$_c$ = {Mr_13_152:.2uS}',
-        bbox=dict(boxstyle="round", fc='C3',alpha=0.6,lw=1),
-        ha='right',va='top',
-        transform=ax3.transAxes)
-
-ax.set_title('38 kA/m',loc='left')
-ax2.set_title('47 kA/m',loc='left')    
-ax3.set_title('57 kA/m',loc='left')
-
-plt.suptitle(f'Mr vs time\nNF 13 hs - {conc_13:0.1f} g/L')
-plt.savefig('4_Mr_vs_time_NF13h_38_47_57.png',dpi=300)
-
-#%% Ciclos todos
-_,_,_, H_13_100,M_13_100,_ = lector_ciclos(ciclos_13[1])
-_,_,_, H_13_125,M_13_125,_ = lector_ciclos(ciclos_13[4])
-_,_,_, H_13_152,M_13_152,_ = lector_ciclos(ciclos_13[8])
-
-fig40, ax2 =plt.subplots(figsize=(7,6),constrained_layout=True,sharey=True,sharex=False)
-
-for i,e in enumerate(ciclos_13):
-    if '100dA' in e:
-        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-        ax2.plot(H_13/1000,M_13,'-',c='C0',label=f'38 {i}',alpha=0.8)
- 
-    if '125dA' in e:
-        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-        ax2.plot(H_13/1000,M_13,'-',c='C1',label=f'47 {i}',alpha=0.8)
-
-    if '152dA' in e:
-        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13[i])
-        ax2.plot(H_13/1000,M_13,'-',c='C2',label=f'57 {i}',alpha=0.8)
-        
+ax.grid()
+ax.set_xlabel('H (kA/m)')
+ax.legend(loc='upper left')
+plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_buena}\n300 kHz & 58 kA/m')          
+
+#%% Importo ciclos y resultados para sintesis mala
+# NF@cit 13 hs - 260409
+sintesis_mala = '260330 mala'
+ciclos_13_mala = glob("../260406_ESAR_c_Temp_NF-cit_13h_260330/57_150/**/*ciclo_promedio_H_M.txt",recursive=True)
+resultados_13_mala = glob("../260406_ESAR_c_Temp_NF-cit_13h_260330/57_150/**/*resultados.txt",recursive=True)
+
+ciclos_13_mala.sort()
+resultados_13_mala.sort()
+conc_13_mala = 24.0 #g/L
+ciclos_13_mala.pop(1) #saco outliers
+resultados_13_mala.pop(1) 
+for p in ciclos_13_mala:
+    print('  ',p)
+
+for res in resultados_13_mala:
+    print('  ',res)
+print('-'*50)   
+# ploteo
+
+fig02, ax =plt.subplots(1,1,figsize=(6,5),constrained_layout=True)  
 ax.set_ylabel('M (A/m)')
-ax2.set_title(f'13 hs   C= g/L',loc='left')
+ax.set_title(f'NF@cit 13 hs - {conc_13_mala:.1f} g/L',loc='left')      
+for i,e in enumerate(ciclos_13_mala):
+    if '150dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_mala[i])
+        ax.plot(H_13/1000,M_13,'-',label=f'NF{i}')
+ax.grid()
+ax.set_xlabel('H (kA/m)')
+ax.legend(loc='upper left')
+plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_mala}\n300 kHz & 58 kA/m')          
 
-ax.set_xticks([-57,-47,-38,0,38,47,57])
-ax2.set_xticks([-57,-47,-38,0,38,47,57])
-ax3.set_xticks([-57,-45,-38,0,38,45,57])
-for a in ax,ax2,ax3:
+#%% COMPARO LAS 4 SINTESIS en grafico 2x2 
+# primero extraigo SAR y tau de resultados para cada sintesis
+def extraer_SAR_tau(resultados):
+    SAR = []
+    tau = []
+    for res in resultados:
+        meta,_,_,_,_,_,_,_,_,_,_,_,_,_,_ = lector_resultados(res)   
+        SAR.append(meta['SAR_W/g'])
+        tau.append(meta['tau_ns']) 
+    return SAR, tau
+SAR_13_AV, tau_13_AV = extraer_SAR_tau(resultados_13_AV)
+SAR_13_AN, tau_13_AN = extraer_SAR_tau(resultados_13_AN)
+SAR_13_buena, tau_13_buena = extraer_SAR_tau(resultados_13_buena)
+SAR_13_mala, tau_13_mala = extraer_SAR_tau(resultados_13_mala)    
+#%% Ploteo comparativo de las 4 sintesis en grafico 2x2, normalizando por concentracion y con SAR en la leyenda
+
+fig5 , axs = plt.subplots(2, 2, figsize=(12, 10), constrained_layout=True, sharex=True, sharey=True)
+axs[0, 0].set_title(f'{sintesis_AV} - {conc_13_AV:.1f} g/L', loc='left')
+axs[0, 1].set_title(f'{sintesis_AN} - {conc_13_AN:.1f} g/L', loc='left')
+axs[1, 0].set_title(f'{sintesis_buena} - {conc_13_buena:.1f} g/L', loc='left')
+axs[1, 1].set_title(f'{sintesis_mala} - {conc_13_mala:.1f} g/L', loc='left')
+
+for i,e in enumerate(ciclos_13_AV):
+    if '152dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_AV[i])
+        axs[0, 0].plot(H_13/1000,M_13/conc_13_AV,'-',label=f'{SAR_13_AV[i]:.3uS}')
+
+for i,e in enumerate(ciclos_13_AN):
+    if '152dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_AN[i])
+        axs[0, 1].plot(H_13/1000,M_13/conc_13_AN,'-',label=f'{SAR_13_AN[i]:.3uS}')
+
+for i,e in enumerate(ciclos_13_buena):
+    if '152dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_buena[i])
+        axs[1, 0].plot(H_13/1000,M_13/conc_13_buena,'-',label=f'{SAR_13_buena[i]:.3uS}')
+
+for i,e in enumerate(ciclos_13_mala):
+    if '150dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_mala[i])
+        axs[1, 1].plot(H_13/1000,M_13/conc_13_mala,'-',label=f'{SAR_13_mala[i]:.3uS}')
+
+for a in axs.flatten():
     a.grid()
-    a.set_xlabel('H (kA/m)')
-    a.legend(title='H$_0$ (kA/m)',loc='upper left',ncol=3)
-plt.suptitle('Comparativa ciclos promedio NF@cit\n300 kHz')
-plt.savefig('0_comparativa_ciclos_internos_NF@13_260409_300kHz_57_47_38.png',dpi=300)
+    a.legend(title='SAR (W/g)',loc='upper left',frameon=True,shadow=True)
+
+for a in [axs[1, 0], axs[1, 1]]:
+    a.set_xlabel('H (kA/m)') 
+for a in [axs[0, 0], axs[1, 0]]:
+    a.set_ylabel('M/[NPM] (Am²/kg)') 
+plt.suptitle(f'Comparativa sintesis NF@cit 13 hs\n300 kHz & 58 kA/m')
+# %% ploteo comparativo de errorbars de tau
+
+cuadro = '$f=300$ kHz\n$H_0=58$ kA/m'
+categorias = [sintesis_AV, sintesis_AN, sintesis_buena, sintesis_mala]
 
 
+x = np.arange(len(categorias))
+
+fig, ax = plt.subplots(figsize=(8,5),constrained_layout=True)
+sep = 0.25
+
+for i,s in enumerate(SAR_13_AV):
+    ax.bar(i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C0')
+
+for i,s in enumerate(SAR_13_AN):
+    ax.bar(1+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C1')
+
+for i,s in enumerate(SAR_13_buena):
+    ax.bar(2+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C2')
+
+for i,s in enumerate(SAR_13_mala):
+    ax.bar(3+i*sep-sep, s.n, yerr=s.s, width=0.2, capsize=5, color='C3')
+
+
+ax.set_xticks(x)
+ax.set_xticklabels(categorias)
+ax.set_ylabel('ESAR')
+ax.set_xlabel('Categoría')
+ax.set_title('ESAR NF@cit 13 hs - Comparativa de síntesis')
+ax.grid(axis='y', alpha=0.3)
+
+ax.text(0.9,0.9,cuadro, transform=ax.transAxes, 
+        va='top', ha='center', fontsize=12,
+        bbox=dict(alpha=0.8,facecolor='white'))
+plt.show()
+
+#%%
