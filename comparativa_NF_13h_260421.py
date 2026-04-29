@@ -124,7 +124,7 @@ resultados_13_AV = glob("Autoclave_Viejo/**/**/*resultados.txt")
 
 ciclos_13_AV.sort()
 resultados_13_AV.sort()
-conc_13_AV = 7 #g/L
+conc_13_AV = 8.46 #g/L
 
 for p in ciclos_13_AV:
     print('  ',p)
@@ -139,7 +139,7 @@ resultados_13_AN = glob("Autoclave_Nuevo/**/**/*resultados.txt")
 
 ciclos_13_AN.sort()
 resultados_13_AN.sort()
-conc_13_AN = 9.9 #g/L
+conc_13_AN = 11.6 #g/L
 
 for p in ciclos_13_AN:
     print('  ',p)
@@ -514,3 +514,4 @@ for ax in axs:
     ax.set_xlabel('H (kA/m)')
     
 plt.savefig('0_comparativa_ciclos_promedio_NF13h_primera_mala_buena_AV_AN.png',dpi=300)
+# %%
