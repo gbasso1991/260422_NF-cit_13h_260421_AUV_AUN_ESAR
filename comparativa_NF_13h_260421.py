@@ -148,7 +148,7 @@ for res in resultados_13_AN:
     print('  ',res)    
 print('-'*50)    
 #%% ploteo Viejo/Nuevo
-fig00, (ax,ax2) =plt.subplots(1,2,figsize=(11,5),constrained_layout=True,sharey=True,sharex=True)
+fig00, (ax,ax2) =plt.subplots(1,2,figsize=(12,6),constrained_layout=True,sharey=True,sharex=True)
 
 ax.set_ylabel('M (A/m)')
 ax.set_title(f'Autoclave Viejo - {conc_13_AV:.1f} g/L',loc='left')
@@ -167,11 +167,11 @@ for i,e in enumerate(ciclos_13_AN):
 for a in ax,ax2:
     a.grid()
     a.set_xlabel('H (kA/m)')
-    a.legend(loc='upper left')
+    a.legend(loc='upper left',frameon=True,shadow=True)
 plt.suptitle(f'Comparativa ciclos promedio NF@cit 13 hs\n300 kHz & 58 kA/m')
 plt.savefig('0_ciclos_promedio_NF13h_AV_AN.png',dpi=300)
 
-fig01, (ax,ax2) =plt.subplots(1,2,figsize=(11,5),constrained_layout=True,sharey=True,sharex=True)
+fig01, (ax,ax2) =plt.subplots(1,2,figsize=(12,6),constrained_layout=True,sharey=True,sharex=True)
 
 ax.set_ylabel('M/[NPM] (Am²/kg)')
 ax.set_title(f'Autoclave Viejo - {conc_13_AV:.1f} g/L',loc='left')
@@ -190,7 +190,7 @@ for i,e in enumerate(ciclos_13_AN):
 for a in ax,ax2:
     a.grid()
     a.set_xlabel('H (kA/m)')
-    a.legend(loc='upper left')
+    a.legend(loc='upper left',frameon=True,shadow=True)
 plt.suptitle(f'Comparativa ciclos promedio NF@cit 13 hs\n300 kHz & 58 kA/m')
 plt.savefig('0_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
 
@@ -462,14 +462,14 @@ fig3.savefig('3_Hc_comparativa_sintesis_NF13h.png',dpi=300)
 
 #%% Ploteo comparativo en 1x5 (incluyendo síntesis primera)
 
-fig, axs = plt.subplots(1, 5, figsize=(21, 5), constrained_layout=True, sharex=True, sharey=True)
+fig, axs = plt.subplots(1, 4, figsize=(18, 5), constrained_layout=True, sharex=True, sharey=True)
 
 # Títulos
 axs[0].set_title(f'{sintesis_primera} - {conc_13_primera:.1f} g/L', loc='left')
-axs[1].set_title(f'{sintesis_mala} - {conc_13_mala:.1f} g/L', loc='left')
-axs[2].set_title(f'{sintesis_buena} - {conc_13_buena:.1f} g/L', loc='left')
-axs[3].set_title(f'{sintesis_AV} - {conc_13_AV:.1f} g/L', loc='left')
-axs[4].set_title(f'{sintesis_AN} - {conc_13_AN:.1f} g/L', loc='left')
+# axs[1].set_title(f'{sintesis_mala} - {conc_13_mala:.1f} g/L', loc='left')
+axs[1].set_title(f'{sintesis_buena} - {conc_13_buena:.1f} g/L', loc='left')
+axs[2].set_title(f'{sintesis_AV} - {conc_13_AV:.1f} g/L', loc='left')
+axs[3].set_title(f'{sintesis_AN} - {conc_13_AN:.1f} g/L', loc='left')
 
 
 # --- PRIMERA ---
@@ -482,24 +482,24 @@ for h, j in enumerate(ciclos_13_primera):
 for i, e in enumerate(ciclos_13_mala):
     if '150dA' in e:
         _, _, _, H_13, M_13, _ = lector_ciclos(e)
-        axs[1].plot(H_13/1000, M_13/conc_13_mala, '-', label=f'{SAR_13_mala[i]:.3uS}')
+        # axs[1].plot(H_13/1000, M_13/conc_13_mala, '-', label=f'{SAR_13_mala[i]:.3uS}')
 
 # --- BUENA ---
 for i, e in enumerate(ciclos_13_buena):
     if '152dA' in e:
         _, _, _, H_13, M_13, _ = lector_ciclos(e)
-        axs[2].plot(H_13/1000, M_13/conc_13_buena, '-', label=f'{SAR_13_buena[i]:.3uS}')
+        axs[1].plot(H_13/1000, M_13/conc_13_buena, '-', label=f'{SAR_13_buena[i]:.3uS}')
 # --- AV ---
 for i, e in enumerate(ciclos_13_AV):
     if '152dA' in e:
         _, _, _, H_13, M_13, _ = lector_ciclos(e)
-        axs[3].plot(H_13/1000, M_13/conc_13_AV, '-', label=f'{SAR_13_AV[i]:.3uS}')
+        axs[2].plot(H_13/1000, M_13/conc_13_AV, '-', label=f'{SAR_13_AV[i]:.3uS}')
 
 # --- AN ---
 for i, e in enumerate(ciclos_13_AN):
     if '152dA' in e:
         _, _, _, H_13, M_13, _ = lector_ciclos(e)
-        axs[4].plot(H_13/1000, M_13/conc_13_AN, '-', label=f'{SAR_13_AN[i]:.3uS}')
+        axs[3].plot(H_13/1000, M_13/conc_13_AN, '-', label=f'{SAR_13_AN[i]:.3uS}')
 
 
 
@@ -513,5 +513,5 @@ axs[0].set_ylabel('M/[NPM] (Am²/kg)')
 for ax in axs:
     ax.set_xlabel('H (kA/m)')
     
-plt.savefig('0_comparativa_ciclos_promedio_NF13h_primera_mala_buena_AV_AN.png',dpi=300)
+plt.savefig('0_comparativa_ciclos_promedio_NF13h_primera_buena_AV_AN.png',dpi=300)
 # %%
