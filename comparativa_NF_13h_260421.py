@@ -115,6 +115,17 @@ def lector_ciclos(filepath):
     M_Am  = pd.Series(data['Magnetizacion_(A/m)']).to_numpy(dtype=float)#A/m
 
     return t,H_Vs,M_Vs,H_kAm,M_Am,metadata
+#%% funcion extraer SAR, tau y Hc de resultados 
+def extraer_SAR_tau(resultados):
+    SAR = []
+    tau = []
+    Hc = []
+    for res in resultados:
+        meta,_,_,_,_,_,_,_,_,_,_,_,_,_,_ = lector_resultados(res)   
+        SAR.append(meta['SAR_W/g'])
+        tau.append(meta['tau_ns'])
+        Hc.append(meta['Hc_kA/m']) 
+    return SAR, tau, Hc
 #%% Obtengo ciclos y resultados para cada concentracion - Todo a 300 kHz
 
 # Autoclave Viejo
@@ -171,6 +182,25 @@ for a in ax,ax2:
 plt.suptitle(f'Comparativa ciclos promedio NF@cit 13 hs\n300 kHz & 58 kA/m')
 plt.savefig('0_ciclos_promedio_NF13h_AV_AN.png',dpi=300)
 
+#%%ploteo AV normalizado
+
+fig001, ax=plt.subplots(figsize=(7,6),constrained_layout=True,sharey=True,sharex=False)
+
+ax.set_ylabel('M/[NPM] (Am²/kg)')
+ax.set_title(f'Autoclave Viejo - {conc_13_AV:.1f} g/L',loc='left')
+
+for i,e in enumerate(ciclos_13_AV):
+    if '152dA' in e:
+        _,_,_, H_13,M_13,_ = lector_ciclos(ciclos_13_AV[i])
+        ax.plot(H_13/1000,M_13/conc_13_AV,'-',label=f'NF{i}')
+
+ax.grid()
+ax.set_xlabel('H (kA/m)')
+ax.legend(loc='upper left',frameon=True,shadow=True)
+#plt.suptitle(f'Comparativa ciclos promedio NF@cit 13 hs\n300 kHz & 58 kA/m')
+plt.savefig('presentacion_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
+
+#%%
 fig01, (ax,ax2) =plt.subplots(1,2,figsize=(12,6),constrained_layout=True,sharey=True,sharex=True)
 
 ax.set_ylabel('M/[NPM] (Am²/kg)')
@@ -192,7 +222,7 @@ for a in ax,ax2:
     a.set_xlabel('H (kA/m)')
     a.legend(loc='upper left',frameon=True,shadow=True)
 plt.suptitle(f'Comparativa ciclos promedio NF@cit 13 hs\n300 kHz & 58 kA/m')
-plt.savefig('0_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
+#plt.savefig('0_ciclos_promedio_norm_NF13h_AV_AN.png',dpi=300)
 
 #%% Importo ciclos y resultados para buena sintesis 
 # NF@cit 13 hs - 260409
@@ -216,7 +246,7 @@ for res in resultados_13_buena:
 print('-'*50)   
 # ploteo
 
-fig02, ax =plt.subplots(1,1,figsize=(6,5),constrained_layout=True)  
+fig02, ax =plt.subplots(1,1,figsize=(7,6),constrained_layout=True)  
 ax.set_ylabel('M (A/m)')
 ax.set_title(f'NF@cit 13 hs - {conc_13_buena:.1f} g/L',loc='left')      
 for i,e in enumerate(ciclos_13_buena):
@@ -226,8 +256,27 @@ for i,e in enumerate(ciclos_13_buena):
 ax.grid()
 ax.set_xlabel('H (kA/m)')
 ax.legend(loc='upper left')
-plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_buena}\n300 kHz & 58 kA/m')          
 
+SAR_13_buena, tau_13_buena, Hc_13_buena = extraer_SAR_tau(resultados_13_buena)
+res_13_buena=[]
+print('Resultados 13_buena', '='*80,'\n')
+for r in resultados_13_buena:
+    res_13_buena.append(ResultadosESAR(os.path.dirname(r)))
+
+rates_13_buena = []
+for i,r in enumerate(res_13_buena):
+    dt = r.time[-1]-r.time[0]
+    dT = r.temperatura[-1]-r.temperatura[0]
+    rate=dT/dt
+    print(f'WRate = {rate:.2f} °C/s')
+    rates_13_buena.append(rate)
+print(f"ESAR 13_buena: {np.mean(SAR_13_buena):.2uS}")
+print(f" tau 13_buena: {np.mean(tau_13_buena):.1uS}") 
+print(f"  Hc 13_buena: {np.mean(Hc_13_buena):.1uS}")
+print(f"WRate 13_buena: {ufloat(np.mean(rates_13_buena),np.std(rates_13_buena)):.1uS} °C/s")
+
+#plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_buena}\n300 kHz & 58 kA/m')          
+# plt.savefig('presentacion_:0_ciclos_promedio_NF13h_buena.png',dpi=300)
 #%% Importo ciclos y resultados para sintesis mala
 # NF@cit 13 hs - 260409
 sintesis_mala = '260330 mala'
@@ -267,20 +316,30 @@ plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_mala}\n300 kHz & 58 kA/m')
 
 #%% COMPARO LAS 4 SINTESIS en grafico 2x2 
 #%% primero extraigo SAR y tau de resultados para cada sintesis
-def extraer_SAR_tau(resultados):
-    SAR = []
-    tau = []
-    Hc = []
-    for res in resultados:
-        meta,_,_,_,_,_,_,_,_,_,_,_,_,_,_ = lector_resultados(res)   
-        SAR.append(meta['SAR_W/g'])
-        tau.append(meta['tau_ns'])
-        Hc.append(meta['Hc_kA/m']) 
-    return SAR, tau, Hc
+
 SAR_13_AV, tau_13_AV, Hc_13_AV = extraer_SAR_tau(resultados_13_AV)
 SAR_13_AN, tau_13_AN, Hc_13_AN = extraer_SAR_tau(resultados_13_AN)
 SAR_13_buena, tau_13_buena, Hc_13_buena = extraer_SAR_tau(resultados_13_buena)
-SAR_13_mala, tau_13_mala, Hc_13_mala = extraer_SAR_tau(resultados_13_mala)    
+SAR_13_mala, tau_13_mala, Hc_13_mala = extraer_SAR_tau(resultados_13_mala)   
+
+#%%
+res_AV = []
+for r in resultados_13_AV:
+    res_AV.append(ResultadosESAR(os.path.dirname(r)))
+
+rates_AV = []
+for i,r in enumerate(res_AV):
+    dt = r.time[-1]-r.time[0]
+    dT = r.temperatura[-1]-r.temperatura[0]
+    rate=dT/dt
+    print(f'WRate = {rate:.2f} °C/s')
+    rates_AV.append(rate)
+
+# print(f"ESAR AV: {np.mean(SAR_AV)}")
+
+# print(f" tau AV: {np.mean(tau_AV)}") 
+# print(f"  Hc AV: {np.mean(Hc_AV)}")
+print(f"  WRate: {ufloat(np.mean(rates_AV),np.std(rates_AV)):.1uS} °C/s")
 #%% Ploteo comparativo de las 4 sintesis en grafico 2x2, normalizando por concentracion y con SAR en la leyenda
 
 fig5 , axs = plt.subplots(2, 2, figsize=(12, 10), constrained_layout=True, sharex=True, sharey=True)
@@ -357,6 +416,22 @@ plt.suptitle(f'Ciclos promedio NF@cit 13 hs {sintesis_primera}\n300 kHz & 58 kA/
 resultados_13_primera.pop(-1)
 ciclos_13_primera.pop(-1)
 SAR_13_primera, tau_13_primera, Hc_13_primera = extraer_SAR_tau(resultados_13_primera)  
+res_13_primera = []
+for r in resultados_13_primera:
+    res_13_primera.append(ResultadosESAR(os.path.dirname(r)))
+
+rates_13_primera = []
+for i,r in enumerate(resultados_13_primera):
+    dt = r.time[-1]-r.time[0]
+    dT = r.temperatura[-1]-r.temperatura[0]
+    rate=dT/dt
+    print(f'WRate = {rate:.2f} °C/s')
+    rates_13_primera.append(rate)
+print(f"ESAR 13_primera: {np.mean(SAR_13_primera):.2uS}")
+print(f" tau 13_primera: {np.mean(tau_13_primera):.1uS}") 
+print(f"  Hc 13_primera: {np.mean(Hc_13_primera):.1uS}")
+print(f"WRate 13_primera: {ufloat(np.mean(rates_13_primera),np.std(rates_13_primera)):.1uS} °C/s")
+
 # %% ploteo comparativo de errorbars de ESAR
 cuadro = '$f=300$ kHz\n$H_0=58$ kA/m'
 categorias = ['260306\nprimera','260409\nmala','260409\nbuena','260421\nAutoclave Viejo', '260421\nAutoclave Nuevo']
